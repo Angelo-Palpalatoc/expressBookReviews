@@ -21,7 +21,24 @@ app.use(
 // needed to set up session management for the customer routes.
 
 app.use("/customer/auth/*", function auth(req, res, next) {
-  //Write the authenication mechanism here
+  if (!req.session.authorization) {
+    return res.status(401).json({
+      message: "User not authenticated",
+    });
+  }
+
+  const token = req.session.authorization.accessToken;
+
+  jwt.verify(token, "access", (err, decoded) => {
+    if (err) {
+      return res.status(403).json({
+        message: "Invalid or expired token",
+      });
+    }
+
+    req.user = decoded;
+    next();
+  });
 });
 // needed to set up authentication for the customer routes.
 

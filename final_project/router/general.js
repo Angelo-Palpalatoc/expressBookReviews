@@ -5,8 +5,28 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 public_users.post("/register", (req, res) => {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  const { username, password } = req.body;
+  //needs to extract the username and password from the request body. The request body is expected to be in JSON format, and it should contain the username and password fields. This line of code uses destructuring assignment to extract these fields from the req.body object.
+
+  if (!username || !password) {
+    //needs to check if either the username or password is missing (i.e., undefined, null, or an empty string). If either of them is missing, it will return a 400 Bad Request response with a message indicating that both fields are required.
+    return res.status(400).json({
+      message: "Username and password are required",
+    });
+  }
+
+  if (isValid(username)) {
+    //needs to check if the username already exists in the users array. The isValid function is expected to return true if the username is already taken, and false otherwise. If the username is already taken, it will return a 409 Conflict response with a message indicating that the username already exists.
+    return res.status(409).json({
+      message: "Username already exists",
+    });
+  }
+
+  users.push({ username, password }); // it means that if the username is valid (i.e., it does not already exist in the users array), the new user object containing the username and password will be added to the users array. This effectively registers the new user by storing their credentials in memory.
+
+  return res.status(201).json({
+    message: "User successfully registered",
+  });
 });
 
 // Get the book list available in the shop
@@ -39,14 +59,23 @@ public_users.get("/author/:author", function (req, res) {
 
 // Get all books based on title
 public_users.get("/title/:title", function (req, res) {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  let title = req.params.title;
+  let booksByTitle = [];
+  let keys = Object.keys(books);
+
+  keys.forEach((key) => {
+    if (books[key].title === title) {
+      booksByTitle.push(books[key]);
+    }
+  });
+
+  res.send(booksByTitle);
 });
 
 //  Get book review
 public_users.get("/review/:isbn", function (req, res) {
-  //Write your code here
-  return res.status(300).json({ message: "Yet to be implemented" });
+  let isbn = req.params.isbn;
+  res.send(books[isbn].reviews);
 });
 
 module.exports.general = public_users;
