@@ -1,0 +1,46 @@
+example.
+curl http://localhost:8800/review/1
+     {"message":"No reviews found for this book."} 
+
+task 1. 
+curl http://localhost:5000/
+     {
+       "1": {
+         "author": "Chinua Achebe",
+         "title": "Things Fall Apart",
+         "reviews": {}
+       },
+       ...
+     }
+
+Task 2
+curl http://localhost:5000/isbn/1
+     {"author":"Chinua Achebe","title":"Things Fall Apart","reviews":{}}	
+
+Task 3
+curl http://localhost:5000/author/Chinua%20Achebe
+     [{"author":"Chinua Achebe","title":"Things Fall Apart","reviews":{}}]
+
+Task 4
+curl http://localhost:5000/title/Pride%20and%20Prejudice
+     [{"author":"Jane Austen","title":"Pride and Prejudice","reviews":{}}]
+
+Task 5
+curl http://localhost:5000/review/1
+     {}
+
+Task 6
+curl.exe -X POST http://localhost:5000/register -H "Content-Type: application/json" --data-raw '{\"username\":\"bob\",\"password\":\"secret\"}'
+     {"message":"User successfully registered"}
+
+Task 7
+curl.exe -X POST http://localhost:5000/customer/login -H "Content-Type: application/json" --data-raw '{\"username\":\"bob\",\"password\":\"secret\"}'
+     {"message":"User successfully logged in","accessToken":"YOUR_ACTUAL_JWT_TOKEN"}
+
+Task 8 
+curl.exe -X PUT "http://localhost:5000/customer/auth/review/1?review=Excellent%20book" -b cookies.txt
+     {"message":"Review added successfully"}
+
+Task 9
+curl.exe -X DELETE "http://localhost:5000/customer/auth/review/1" -b cookies.txt
+     {"message":"Review deleted successfully"}

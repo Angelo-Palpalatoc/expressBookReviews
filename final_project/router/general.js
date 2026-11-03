@@ -3,6 +3,35 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require("axios");
+const BASE_URL = "http://localhost:5000";
+
+function getAllBooks(callback) {
+  axios
+    .get(`${BASE_URL}/`) //this line of code is used to make a GET request to the specified URL
+    .then((response) => callback(null, response.data)) //this line of code is used to handle the successful response from the GET request. It takes the response object as a parameter and calls the callback function with two arguments: null (indicating no error) and the data received from the response (response.data).
+    .catch((error) => callback(error, null));
+}
+
+function getBookByISBN(isbn) {
+  return axios
+    .get(`${BASE_URL}/isbn/${isbn}`)
+    .then((response) => response.data);
+}
+
+async function getBooksByAuthor(author) {
+  const response = await axios.get(
+    `${BASE_URL}/author/${encodeURIComponent(author)}`,
+  );
+  return response.data;
+}
+
+async function getBooksByTitle(title) {
+  const response = await axios.get(
+    `${BASE_URL}/title/${encodeURIComponent(title)}`,
+  );
+  return response.data;
+}
 
 public_users.post("/register", (req, res) => {
   const { username, password } = req.body;
@@ -78,4 +107,8 @@ public_users.get("/review/:isbn", function (req, res) {
   res.send(books[isbn].reviews);
 });
 
+module.exports.getAllBooks = getAllBooks;
+module.exports.getBookByISBN = getBookByISBN;
+module.exports.getBooksByAuthor = getBooksByAuthor;
+module.exports.getBooksByTitle = getBooksByTitle;
 module.exports.general = public_users;
